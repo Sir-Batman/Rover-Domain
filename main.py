@@ -1,11 +1,11 @@
 from simulation_core import SimulationCore
-
+import numpy
+import pyximport
+pyximport.install(setup_args={'include_dirs': numpy.get_include()})
 import config.globalReward as g
 import config.differenceReward as d
 
-# TODO, load a single config file for quick editting
-
-
+ 
 i = 0
 while True:
     print("Test%d"%(i))
@@ -17,4 +17,3 @@ while True:
     d.run(core)
     
     i += 1
-    

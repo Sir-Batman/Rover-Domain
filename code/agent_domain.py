@@ -1,11 +1,13 @@
+
 from numpy import matmul, array, dot, zeros, linalg, sin
+
+
 
 def doAgentSense(data):
     """
      Sensor model is <aNE, aNW, aSW, aSE, pNE, pNE, pSW, pSE>
      Where a means (other) agent, p means poi, and the rest are the quadrants
     """
-    
     number_agents = data['Number of Agents']
     number_pois = data['Number of POIs'] 
     agentPositionCol = data["Agent Positions"]
@@ -13,7 +15,6 @@ def doAgentSense(data):
     orientationCol = data["Agent Orientations"]
     minDistanceSqr = data["Minimum Distance"] ** 2
     observationCol = [None] * number_agents
-    
     
     for agentIndex in range(number_agents):
         
@@ -91,7 +92,8 @@ def doAgentSense(data):
             
         observationCol[agentIndex] = observation
     data["Agent Observations"] = observationCol
-    
+
+ 
 def doAgentProcess(data):
     number_agents = data['Number of Agents']
     actionCol = [None] * number_agents
@@ -100,7 +102,8 @@ def doAgentProcess(data):
     for agentIndex in range(number_agents):
         actionCol[agentIndex] = policyCol[agentIndex].get_next(observationCol[agentIndex])
     data["Agent Actions"] = actionCol
-     
+
+   
 def doAgentMove(data):
     worldWidth = data["World Width"]
     worldLength = data["World Length"]
@@ -139,4 +142,4 @@ def doAgentMove(data):
             positionCol[agentIndex][1] = 0.0
         
     data["Agent Positions"]  = positionCol
-    data["Agent Orientation"] = orientationCol 
+    data["Agent Orientations"] = orientationCol 

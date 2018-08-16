@@ -7,18 +7,9 @@ import random
 from torch.autograd import Variable
 from torch import Tensor
 
-class Policy(object):
-    def __init__(self, *args, **kwargs):
-        pass
-    
-    def get_next(self, state, *args, **kwargs):
-        pass
-    
-    def get_train(self, *args, **kwargs):
-        pass
-    
 
-class RandomPolicy(Policy):
+
+class RandomPolicy:
     def __init__(self, output_shape, low=-1, high=1):
         self.output_shape = output_shape
         self.low = low
@@ -27,7 +18,7 @@ class RandomPolicy(Policy):
     def get_next(self,state):
         return np.random.uniform(self.low, self.high, self.output_shape)
         
-class Evo_MLP(nn.Module, Policy):
+class Evo_MLP(nn.Module):
     def __init__(self, input_shape, num_outputs, num_units=16):
         super(Evo_MLP, self).__init__()
         
@@ -38,24 +29,28 @@ class Evo_MLP(nn.Module, Policy):
 
         self.fc1 = nn.Linear(input_shape, num_units)
         self.fc2 = nn.Linear(num_units, num_outputs)
+        
         for param in self.parameters():
             param.requires_grad = False
 
     def get_next(self, state):
         x = Variable(torch.FloatTensor(state))
-        x = F.relu(self.fc1(x))
+        x = F.tanh(self.fc1(x))
         y = F.tanh(self.fc2(x))
-        return np.array(y)
-
+        return y.numpy()
+        
     def init_weights(m):
+        # Not implemented
         if type(m) == nn.Linear:
             m.weight.data.normal_(0, 2)
 
     def mutate(self):
-        random_w1 = np.random.normal(0, 10, list(self.fc1.weight.size()))
-        random_w1 *= (np.random.uniform(size = list(self.fc1.weight.size())) < 0.1).astype(float)
-        random_w2 = np.random.normal(0, 10, list(self.fc2.weight.size()))
-        random_w2 *= (np.random.uniform(size = list(self.fc2.weight.size())) < 0.1).astype(float)
+        m = 10
+        mr = 0.01
+        random_w1 = np.random.normal(0, m, list(self.fc1.weight.size()))
+        random_w1 *= (np.random.uniform(size = list(self.fc1.weight.size())) < mr).astype(float)
+        random_w2 = np.random.normal(0, m, list(self.fc2.weight.size()))
+        random_w2 *= (np.random.uniform(size = list(self.fc2.weight.size())) < mr).astype(float)
         self.fc1.weight += Tensor(random_w1)
         self.fc2.weight += Tensor(random_w2)
         
@@ -63,29 +58,6 @@ class Evo_MLP(nn.Module, Policy):
         newMlp = Evo_MLP(self.input_shape, self.num_outputs, self.num_units)
         newMlp.load_state_dict(self.state_dict())
         return newMlp
-
-def CCEA(population, fitness, retain=0.2):
-    '''
-    Implements the basic CCEA algorithm with binary tournaments.
-    Maintains 20% of the population each time by default.
-    '''
-    population_size = population.num_agents
-    #print(population, fitness)
-    scored_pop = []
-    for agent_id in population.agent_policies:
-        scored_pop.append((population.agent_policies[agent_id], fitness[agent_id]))
-    scored_pop = sorted(scored_pop, key=lambda x: x[1],reverse=True)
-    scored_pop = [x[0] for x in scored_pop]
-    # retain x% of the population
-    scored_pop = scored_pop[:int(population_size*retain)]
-    for _ in range(population_size - len(scored_pop)):
-        # We only choose from the unmutated survivors
-        choice = random.choice(scored_pop)
-        #print(choice)
-        choice.mutate()
-        scored_pop.append(choice)
-    # Return the evaluated population.
-    return scored_pop
     
 def initCcea(input_shape, num_outputs, num_units=16):
     def initCceaGo(data):
@@ -109,6 +81,7 @@ def assignBestCceaPolicies(data):
     policyCol = [None] * number_agents
     for agentIndex in range(number_agents):
         policyCol[agentIndex] = max(populationCol[agentIndex], key = lambda policy: policy.fitness)
+        #policyCol[agentIndex] = populationCol[agentIndex][0]
     data["Agent Policies"] = policyCol
 
 def rewardCceaPolicies(data):
@@ -125,7 +98,7 @@ def evolveCceaPolicies(data):
         population = populationCol[agentIndex]
         newPopulation = [None] * len(population)
         
-        random.shuffle(population)
+        
         
         # Binary Tournament
         newPolicyIndex = 0
@@ -144,5 +117,6 @@ def evolveCceaPolicies(data):
             newPopulation[newPolicyIndex] = newPolicy
             newPolicyIndex += 1
             
+        random.shuffle(newPopulation)
         data['Agent Populations'][agentIndex] = newPopulation
         

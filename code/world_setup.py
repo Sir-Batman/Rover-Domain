@@ -1,4 +1,4 @@
-from numpy import array, random, cos, sin, pi
+from numpy import array, random, cos, sin, pi, vstack
 
 def blueprintAgent(data):
     number_agents = data['Number of Agents']
@@ -6,14 +6,12 @@ def blueprintAgent(data):
     world_length = data['World Length']
     
     
-    # Initial all agents in the center of the world
-    data['Agent Positions BluePrint'] = [None] * number_agents
-    data['Agent Orientations BluePrint'] = [None] * number_agents
-    for agentIndex in range(number_agents):
-        data['Agent Positions BluePrint'][agentIndex] = array([world_width/2.0, world_length/2.0])
-        angle = random.uniform(-pi, pi)
-        data['Agent Orientations BluePrint'][agentIndex] = array([cos(angle), sin(angle)])
+    # Initial all agents in the randomly in world
+    data['Agent Positions BluePrint'] = random.rand(number_agents, 2) * [world_width, world_length]
+    angles = random.uniform(-pi, pi, number_agents)
+    data['Agent Orientations BluePrint'] = vstack((cos(angles), sin(angles))).T
 
+    
 def blueprintPoi(data):
     number_pois = data['Number of POIs']    
     world_width = data['World Width']
@@ -21,11 +19,9 @@ def blueprintPoi(data):
     
     
     # Initialize all Pois Randomly
-    data['Poi Positions BluePrint'] = [None] * number_pois
-    for poiIndex in range(number_pois):
-        data['Poi Positions BluePrint'][poiIndex] = random.rand(2) * [world_width, world_length]
-        
+    data['Poi Positions BluePrint'] = random.rand(number_pois, 2) * [world_width, world_length]
+ 
 def initWorld(data):
-    data['Agent Positions'] = data['Agent Positions BluePrint']
-    data['Agent Orientations'] = data['Agent Orientations BluePrint']
-    data['Poi Positions'] = data['Poi Positions BluePrint'] 
+    data['Agent Positions'] = data['Agent Positions BluePrint'].copy()
+    data['Agent Orientations'] = data['Agent Orientations BluePrint'].copy()
+    data['Poi Positions'] = data['Poi Positions BluePrint'].copy()
