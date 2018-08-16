@@ -17,9 +17,10 @@ def run(core):
     core.data["Tests per Episode"] = 1
     core.data["Number of Episodes"] = 1000
     
-    perfSaveFileName = "log/difference_100/perf %s.csv"%(dateTimeString)
-    trajSaveFileName = "log/difference_100/traj %s.csv"%(dateTimeString)
-    
+    perfSaveFileName = "log/difference/perf %s.csv"%(dateTimeString)
+    trajSaveFileName = "log/difference/traj %s.csv"%(dateTimeString)
+    pickleSaveFileName = "log/difference/data %s.pickle"%(dateTimeString)
+
     # print the current Episode
     core.addTrainEndFunc(lambda data: print(data["Episode Index"], data["Global Reward"]))
     core.addTestEndFunc(lambda data: print(data["Episode Index"], data["Global Reward"]))
@@ -82,6 +83,11 @@ def run(core):
     core.addWorldTestBeginFunc(assignBestCceaPolicies)
     
     core.run()
+
+    import pickle
+    
+    with open(pickleSaveFileName, 'wb') as handle:
+        pickle.dump(core.data, handle, protocol = pickle.HIGHEST_PROTOCOL)
 
 
 

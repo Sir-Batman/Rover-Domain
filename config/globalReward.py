@@ -17,9 +17,9 @@ def run(core):
     core.data["Tests per Episode"] = 1
     core.data["Number of Episodes"] = 1000
     
-    perfSaveFileName = "log/global_tanh/perf %s.csv"%(dateTimeString)
-    trajSaveFileName = "log/global_tanh/traj %s.csv"%(dateTimeString)
-    
+    perfSaveFileName = "log/global/perf %s.csv"%(dateTimeString)
+    trajSaveFileName = "log/global/traj %s.csv"%(dateTimeString)
+    pickleSaveFileName = "log/global/data %s.pickle"%(dateTimeString)
 
     # NOTE: make sure functions are added to the list in the right order
     
@@ -85,6 +85,10 @@ def run(core):
     
     core.run()
 
+    import pickle
+    
+    with open(pickleSaveFileName, 'wb') as handle:
+        pickle.dump(core.data, handle, protocol = pickle.HIGHEST_PROTOCOL)
 
 
 """
