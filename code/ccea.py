@@ -35,8 +35,8 @@ class Evo_MLP(nn.Module):
 
     def get_next(self, state):
         x = Variable(torch.FloatTensor(state))
-        x = F.tanh(self.fc1(x))
-        y = F.tanh(self.fc2(x))
+        x = self.fc1(x).tanh()
+        y = self.fc2(x).tanh()
         return y.numpy()
         
     def init_weights(m):

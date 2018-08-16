@@ -5,7 +5,7 @@ pyximport.install(setup_args={'include_dirs': numpy.get_include()})
 import config.globalReward as g
 import config.differenceReward as d
 
- 
+
 i = 0
 while True:
     print("Test%d"%(i))
