@@ -8,7 +8,6 @@ from torch.autograd import Variable
 from torch import Tensor
 
 
-
 class RandomPolicy:
     def __init__(self, output_shape, low=-1, high=1):
         self.output_shape = output_shape
@@ -97,9 +96,7 @@ def evolveCceaPolicies(data):
     for agentIndex in range(number_agents):
         population = populationCol[agentIndex]
         newPopulation = [None] * len(population)
-        
-        
-        
+
         # Binary Tournament
         newPolicyIndex = 0
         for matchIndex in range(len(population)//2):

@@ -1,6 +1,5 @@
 
 import numpy as np
-cimport numpy as np
 cimport cython
 
 cdef extern from "math.h":

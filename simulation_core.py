@@ -94,44 +94,4 @@ class SimulationCore:
         for func in self.trialEndFuncCol:
             func(self.data)
             
-    def addTrialBeginFunc(self, func):
-        self.trialBeginFuncCol.append(func)
-
-
-    def addTrainBeginFunc(self, func):
-        self.trainBeginFuncCol.append(func)
-
-    def addWorldTrainBeginFunc(self, func):
-        self.worldTrainBeginFuncCol.append(func)
-        
-    def addWorldTrainStepFunc(self, func):
-        self.worldTrainStepFuncCol.append(func)  
-        
-    def addWorldTrainEndFunc(self, func):
-        self.worldTrainEndFuncCol.append(func)  
-    
-    def addTrainEndFunc(self, func):
-        self.trainEndFuncCol.append(func) 
-        
-    def addTestBeginFunc(self, func):
-        self.testBeginFuncCol.append(func) 
-        
-
-    def addWorldTestBeginFunc(self, func):
-        self.worldTestBeginFuncCol.append(func)
-        
-        
-    def addWorldTestStepFunc(self, func):
-        self.worldTestStepFuncCol.append(func) 
-        
-    def addWorldTestEndFunc(self, func):
-        self.worldTestEndFuncCol.append(func) 
-        
-    def addTestEndFunc(self, func):
-        self.testEndFuncCol.append(func) 
-        
-    def addTrialEndFunc(self, func):
-        self.trialEndFuncCol.append(func) 
-        
-
 

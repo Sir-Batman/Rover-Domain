@@ -5,7 +5,6 @@ def blueprintAgent(data):
     world_width = data['World Width']
     world_length = data['World Length']
     
-    
     # Initial all agents in the randomly in world
     data['Agent Positions BluePrint'] = random.rand(number_agents, 2) * [world_width, world_length]
     angles = random.uniform(-pi, pi, number_agents)
@@ -16,7 +15,6 @@ def blueprintPoi(data):
     number_pois = data['Number of POIs']    
     world_width = data['World Width']
     world_length = data['World Length']    
-    
     
     # Initialize all Pois Randomly
     data['Poi Positions BluePrint'] = random.rand(number_pois, 2) * [world_width, world_length]
