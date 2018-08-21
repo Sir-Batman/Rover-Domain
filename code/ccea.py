@@ -7,7 +7,6 @@ import random
 from torch.autograd import Variable
 from torch import Tensor
 
-
 class RandomPolicy:
     def __init__(self, output_shape, low=-1, high=1):
         self.output_shape = output_shape

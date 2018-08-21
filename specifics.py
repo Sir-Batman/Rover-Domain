@@ -20,10 +20,10 @@ def getSim():
     sim.data["Coupling"] = 3
     sim.data["Observation Radius"] = 4.0
     sim.data["Minimum Distance"] = 1.0
-    sim.data["Steps"] = 30
+    sim.data["Steps"] = 50
     sim.data["Trains per Episode"] = 100
     sim.data["Tests per Episode"] = 1
-    sim.data["Number of Episodes"] = 1000
+    sim.data["Number of Episodes"] = 50
     sim.data["Specifics Name"] = "coupling_3"
     sim.data["Mod Name"] = "global"
     

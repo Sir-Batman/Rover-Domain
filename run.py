@@ -3,12 +3,16 @@ from mods import *
 from shutil import copyfile
 
 # NOTE: Add the mod functions (variables) to run to modCol here:
-modCol = [globalRewardMod, differenceRewardMod]
+modCol = [
+    globalRewardMod,
+    differenceRewardMod,
+    globalRewardC1Mod,
+    differenceRewardC1Mod
+]
 
 def copyTestFiles():
     copyfile("mods.py", "log/%s/mods.py"%sim.data["Specifics Name"])
     copyfile("specifics.py", "log/%s/specifics.py"%sim.data["Specifics Name"])
-
 
 i = 0
 while True:
@@ -18,8 +22,9 @@ while True:
         mod(sim)
         sim.run()
     i += 1
-    
-    
 
-    
-    
+
+# def main():
+#     sim = getSim()
+#     globalRewardMod(sim)
+#     sim.run()
