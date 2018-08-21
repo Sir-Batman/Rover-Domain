@@ -73,7 +73,7 @@ def assignGlobalReward(data):
     """
     globalReward = calculateGlobalReward(data)
     data["Global Reward"] = globalReward
-    data["Agent Rewards"] = [globalReward] * number_agents
+    data["Agent Rewards"] = [globalReward] * data["Number of Agents"]
  
 def assignStepGlobalReward(data):
     agentPositionHistory = data["Agent Position History"]
