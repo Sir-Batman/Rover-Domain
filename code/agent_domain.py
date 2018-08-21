@@ -10,6 +10,7 @@ def doAgentSense(data):
     """
     number_agents = data['Number of Agents']
     number_pois = data['Number of POIs'] 
+    poiValueCol = data['Poi Values']
     agentPositionCol = data["Agent Positions"]
     poiPositionCol = data["Poi Positions"]
     orientationCol = data["Agent Orientations"]
@@ -80,15 +81,15 @@ def doAgentSense(data):
             if agentFrameSeparation[0] > 0:
                 # poi is north-east of agent
                 if agentFrameSeparation[1] > 0:
-                    observation[4] += 1.0  / distanceSqr
+                    observation[4] += poiValueCol[poiIndex]  / distanceSqr
                 else: # poi is south-east of agent
-                    observation[7] += 1.0  / distanceSqr
+                    observation[7] += poiValueCol[poiIndex]  / distanceSqr
             else:  # poi is west of agent
                 # poi is north-west of agent
                 if agentFrameSeparation[1] > 0:
-                    observation[5] += 1.0  / distanceSqr
+                    observation[5] += poiValueCol[poiIndex]  / distanceSqr
                 else:  # poi is south-west of agent
-                    observation[6] += 1.0  / distanceSqr
+                    observation[6] += poiValueCol[poiIndex]  / distanceSqr
             
         observationCol[agentIndex] = observation
     data["Agent Observations"] = observationCol

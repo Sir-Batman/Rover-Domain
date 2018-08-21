@@ -4,6 +4,7 @@ def assignGlobalReward(data):
     agentPositionHistory = data["Agent Position History"]
     number_agents = data['Number of Agents']
     number_pois = data['Number of POIs'] 
+    poiValueCol = data['Poi Values']
     poiPositionCol = data["Poi Positions"]
     minDistanceSqr = data["Minimum Distance"] ** 2
     historyStepCount = data["Steps"] + 1
@@ -41,7 +42,7 @@ def assignGlobalReward(data):
         if closestObsDistanceSqr < observationRadiusSqr:
             if closestObsDistanceSqr < minDistanceSqr:
                 closestObsDistanceSqr = minDistanceSqr
-            globalReward += 1.0 / closestObsDistanceSqr
+            globalReward += poiValueCol[poiIndex] / closestObsDistanceSqr
     
     data["Global Reward"] = globalReward
     data["Agent Rewards"] = [globalReward] * number_agents
@@ -50,6 +51,7 @@ def assignStepGlobalReward(data):
     agentPositionHistory = data["Agent Position History"]
     number_agents = data['Number of Agents']
     number_pois = data['Number of POIs'] 
+    poiValueCol = data['Poi Values']
     poiPositionCol = data["Poi Positions"]
     minDistanceSqr = data["Minimum Distance"] ** 2
     historyStepCount = data["Steps"] + 1
@@ -83,7 +85,7 @@ def assignStepGlobalReward(data):
                 if stepClosestObsDistanceSqr < observationRadiusSqr:
                     if stepClosestObsDistanceSqr < minDistanceSqr:
                         stepClosestObsDistanceSqr = minDistanceSqr
-                    globalReward += 1.0 / stepClosestObsDistanceSqr
+                    globalReward += poiValueCol[poiIndex] / stepClosestObsDistanceSqr
 
     data["Global Reward"] = globalReward
     data["Agent Rewards"] = [globalReward] * number_agents    
@@ -92,6 +94,7 @@ def assignDifferenceReward(data):
     agentPositionHistory = data["Agent Position History"]
     number_agents = data['Number of Agents']
     number_pois = data['Number of POIs'] 
+    poiValueCol = data['Poi Values']
     poiPositionCol = data["Poi Positions"]
     minDistanceSqr = data["Minimum Distance"] ** 2
     historyStepCount = data["Steps"] + 1
@@ -129,7 +132,7 @@ def assignDifferenceReward(data):
         if closestObsDistanceSqr < observationRadiusSqr:
             if closestObsDistanceSqr < minDistanceSqr:
                 closestObsDistanceSqr = minDistanceSqr
-            globalReward += 1.0 / closestObsDistanceSqr
+            globalReward += poiValueCol[poiIndex] / closestObsDistanceSqr
     
     differenceRewards = [0] * number_agents
     
@@ -165,7 +168,7 @@ def assignDifferenceReward(data):
             if closestObsDistanceSqr < observationRadiusSqr:
                 if closestObsDistanceSqr < minDistanceSqr:
                     closestObsDistanceSqr = minDistanceSqr
-                globalWithoutReward += 1.0 / closestObsDistanceSqr
+                globalWithoutReward += poiValueCol[poiIndex] / closestObsDistanceSqr
         differenceRewards[agentIndex] = globalReward - globalWithoutReward
         
     data["Agent Rewards"] = differenceRewards  

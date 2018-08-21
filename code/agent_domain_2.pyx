@@ -19,6 +19,9 @@ def doAgentSense(data):
     agentPositionCol = np.array(data["Agent Positions"])
     cdef double[:, :] agentPositionColView = agentPositionCol
     
+    poiValueCol = np.array(data['Poi Values'])
+    cdef double[:] poiValueColView = poiValueCol
+    
     poiPositionCol = np.array(data["Poi Positions"])
     cdef double[:, :] poiPositionColView = poiPositionCol
     
@@ -97,15 +100,15 @@ def doAgentSense(data):
             if agentFrameSeparation0> 0:
                 # poi is north-east of agent
                 if agentFrameSeparation1 > 0:
-                    observationColView[agentIndex,4] += 1.0  / distanceSqr
+                    observationColView[agentIndex,4] += poiValueColView[poiIndex]  / distanceSqr
                 else: # poi is south-east of agent
-                    observationColView[agentIndex,7] += 1.0  / distanceSqr
+                    observationColView[agentIndex,7] += poiValueColView[poiIndex]  / distanceSqr
             else:  # poi is west of agent
                 # poi is north-west of agent
                 if agentFrameSeparation1 > 0:
-                    observationColView[agentIndex,5] += 1.0  / distanceSqr
+                    observationColView[agentIndex,5] += poiValueColView[poiIndex]  / distanceSqr
                 else:  # poi is south-west of agent
-                    observationColView[agentIndex,6] += 1.0  / distanceSqr
+                    observationColView[agentIndex,6] += poiValueColView[poiIndex]  / distanceSqr
                     
     data["Agent Observations"] = observationCol
 
