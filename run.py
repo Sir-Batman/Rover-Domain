@@ -18,8 +18,3 @@ while True:
         mod(sim)
         sim.run()
     i += 1
-    
-    
-
-    
-    
