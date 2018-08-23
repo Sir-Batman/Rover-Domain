@@ -3,7 +3,7 @@ from simulation_mods import *
 
 
 # NOTE: Add the mod functions (variables) to run to modCol here:
-modCol = [differenceRewardMod]
+modCol = [alignment_mod]
 
 i = 0
 while True:

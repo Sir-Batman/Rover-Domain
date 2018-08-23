@@ -1,5 +1,6 @@
-
+from alignment import quickalignment
 import numpy as np
+import subpolicies
 cimport cython
 
 cdef extern from "math.h":
@@ -121,6 +122,27 @@ def doAgentProcess(data):
     for agentIndex in range(number_agents):
         actionCol[agentIndex] = policyFuncCol[agentIndex](observationCol[agentIndex])
     data["Agent Actions"] = actionCol
+
+def doAgentProcess_Alignment(data):
+    """
+    Inserts the alignment calculation and policy-action selection into the agent process.
+    Uses subpolicies imported from subpolicies.py
+    """
+    cdef int agentIndex
+    cdef int number_agents = data['Number of Agents']
+    actionCol = np.zeros((number_agents, 2), dtype = np.float_)
+    observationCol = data["Agent Observations"]
+    for agentIndex in range(number_agents):
+        # Apply the alignment calculation and action selection for each agent
+        aligned_reward = quickalignment(data, agentIndex)
+        if aligned_reward == "agent":
+            # Go to agent is most aligned
+            actionCol[agentIndex][0], actionCol[agentIndex][1] = subpolicies.agent_policy(observationCol[agentIndex])
+        else:
+            # POI most aligned
+            actionCol[agentIndex][0], actionCol[agentIndex][1] = subpolicies.poi_policy(observationCol[agentIndex])
+    data["Agent Actions"] = actionCol
+
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.  

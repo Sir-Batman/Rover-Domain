@@ -15,8 +15,8 @@ def getSim():
     
     sim.data["Number of Agents"] = 9
     sim.data["Number of POIs"] = 4
-    sim.data["World Width"] = 30.0
-    sim.data["World Length"] = 30.0
+    sim.data["World Width"] = 50.0
+    sim.data["World Length"] = 50.0
     sim.data["Coupling"] = 3
     sim.data["Observation Radius"] = 4.0
     sim.data["Minimum Distance"] = 1.0
@@ -55,10 +55,10 @@ def getSim():
     
     # Add Rover Domain Dynamic Functionality (using Cython to speed up code)
     sim.worldTrainStepFuncCol.append(doAgentSense)
-    sim.worldTrainStepFuncCol.append(doAgentProcess)
+    sim.worldTrainStepFuncCol.append(doAgentProcess_Alignment)
     sim.worldTrainStepFuncCol.append(doAgentMove)
     sim.worldTestStepFuncCol.append(doAgentSense)
-    sim.worldTestStepFuncCol.append(doAgentProcess)
+    sim.worldTestStepFuncCol.append(doAgentProcess_Alignment)
     sim.worldTestStepFuncCol.append(doAgentMove)
     
     # Add Agent Position Trajectory History Functionality
