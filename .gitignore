@@ -1,3 +1,6 @@
+# Simulator outputs
+log/
+
 # Vim
 .*.swp
 
