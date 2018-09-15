@@ -52,11 +52,12 @@ def getSim():
     sim.testBeginFuncCol.append(blueprintPoi)
     sim.worldTestBeginFuncCol.append(initWorld)
     
-    
     # Add Rover Domain Dynamic Functionality (using Cython to speed up code)
+    # Note: Change the Process functions to change the agent type.
     sim.worldTrainStepFuncCol.append(doAgentSense)
     sim.worldTrainStepFuncCol.append(doAgentProcess_Alignment)
     sim.worldTrainStepFuncCol.append(doAgentMove)
+
     sim.worldTestStepFuncCol.append(doAgentSense)
     sim.worldTestStepFuncCol.append(doAgentProcess_Alignment)
     sim.worldTestStepFuncCol.append(doAgentMove)
