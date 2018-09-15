@@ -1,6 +1,7 @@
 from alignment import quickalignment
 import numpy as np
 import subpolicies
+import qlearner
 cimport cython
 
 cdef extern from "math.h":
@@ -143,6 +144,51 @@ def doAgentProcess_Alignment(data):
             actionCol[agentIndex][0], actionCol[agentIndex][1] = subpolicies.poi_policy(observationCol[agentIndex])
     data["Agent Actions"] = actionCol
 
+def to_Discrete(state):
+    """
+    Translate the current, continuous valued vector state into a discrete version.
+    This is done by scaling up the continuous values by a factor of 10, then rounding
+    to the closest integer.
+
+    Args:
+        state - the 8-dimensional continuous value vector state in the rover domain
+
+    Returns:
+        state: numpy array of integers. Will be the same length (8) as the input vector.
+
+    Preconditions: None
+
+    Postconditions: None
+    """
+    new_state = np.zeros(state.shape())
+    for i, value in enumerate(state):
+        new_state[i] = round(value*10)
+    return new_state
+
+def doAgentProcess_Q_agent(data):
+    """
+    Processes the observations/decisions for the Q-Agent.
+    This version has the Q-Agent try to learn a which action to take based on the modified state representation.
+    TODO: make this agent learn which sub-policy to select from. Will not use alignment, but will be a basic HRL model.
+
+    Args:
+        data: the global data structure
+
+    Returns: None
+
+    Preconditions:
+        data['Agent Policies'] has the Q-Agent class instantiations
+
+    Postconditions:
+        data['Agent Actions'] is populated with the actions selected by each agent.
+    """
+    action_map = {0:[1,0], 1:[1.4, 1.4], 2:[0,1],  3:[-1.4, 1.4], 4:[-1, 0], 5:[-1.4, -1.4], 6:[0,-1], 7:[1.4, -1.4]}
+    actions = np.zeros((data['Number of Agents'], 2))
+    for agent_index in range(data['Number of Agents']):
+        discrete_state = to_Discrete(data['Agent Observations'][agent_index])
+        selected_action = data['Agent Policies'][agent_index](discrete_state)
+        actions[agent_index] = action_map[selected_action] # translate from an action number to the vector
+    data["Agent Actions"] = actions
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.  
