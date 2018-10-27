@@ -124,6 +124,42 @@ def doAgentProcess(data):
         actionCol[agentIndex] = policyFuncCol[agentIndex](observationCol[agentIndex])
     data["Agent Actions"] = actionCol
 
+
+def doAgentProcess_ScheduleMP(data):
+    """
+    Uses data['Policy Schedule'] to determine which policy of the set of policies
+    each agent should be using at each time step.
+    
+    Each Schedule is structured as 
+    [(policy, timestep), ... , (p, t)]
+    where p is the index/descriptor to use for a policy, and
+    t is the timestep at which to switch to policy p (not the duration of using policy p)
+    The first policy to be used should have timestep 0 as it's start point.
+
+    Also assumes the agent policies are stored in a list
+    """
+    # Find policy to use
+    current_step = data["Step Index"]
+    policy_key = None
+    for i, (p, t) in enumerate(data['Policy Schedule']):
+        if t > current_step:
+            policy_key = data['Policy Schedule'][i-1][0]
+            break
+    # Edge case for the last policy in the schedule
+    if policy_key is None:
+        policy_key = data['Policy Schedule'][-1][0]
+
+    # Start the action selection based on right policy from above
+    cdef int agentIndex
+    cdef int number_agents = data['Number of Agents']
+    actionCol = np.zeros((number_agents, 2), dtype = np.float_)
+    observationCol = data["Agent Observations"]
+    for agentIndex in range(number_agents):
+        policy = data["Agent Policies"][agentIndex][policy_key]
+        actionCol[agentIndex][0], actionCol[agentIndex][1] = policy(observationCol[agentIndex])
+    data["Agent Actions"] = actionCol
+
+
 def doAgentProcess_Alignment(data):
     """
     Inserts the alignment calculation and policy-action selection into the agent process.

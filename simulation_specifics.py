@@ -55,11 +55,11 @@ def getSim():
     # Add Rover Domain Dynamic Functionality (using Cython to speed up code)
     # Note: Change the Process functions to change the agent type.
     sim.worldTrainStepFuncCol.append(doAgentSense)
-    sim.worldTrainStepFuncCol.append(doAgentProcess_Alignment)
+    sim.worldTrainStepFuncCol.append(doAgentProcess_ScheduleMP)
     sim.worldTrainStepFuncCol.append(doAgentMove)
 
     sim.worldTestStepFuncCol.append(doAgentSense)
-    sim.worldTestStepFuncCol.append(doAgentProcess_Alignment)
+    sim.worldTestStepFuncCol.append(doAgentProcess_ScheduleMP)
     sim.worldTestStepFuncCol.append(doAgentMove)
     
     # Add Agent Position Trajectory History Functionality
@@ -87,11 +87,16 @@ def getSim():
     # sim.worldTestBeginFuncCol.append(assignBestDePolicies)
     
     # Add CCEA Functionality 
-    sim.trialBeginFuncCol.append(initCcea(input_shape= 8, num_outputs=2, num_units = 16))
-    sim.worldTrainBeginFuncCol.append(assignCceaPolicies)
-    sim.worldTrainEndFuncCol.append(rewardCceaPolicies)
-    sim.testEndFuncCol.append(evolveCceaPolicies)
-    sim.worldTestBeginFuncCol.append(assignBestCceaPolicies)
+    
+    # sim.trialBeginFuncCol.append(initCcea(input_shape= 8, num_outputs=2, num_units = 16))
+    # sim.worldTrainBeginFuncCol.append(assignCceaPolicies)
+    # sim.worldTrainEndFuncCol.append(rewardCceaPolicies)
+    # sim.worldTestBeginFuncCol.append(assignBestCceaPolicies)
+    # sim.testEndFuncCol.append(evolveCceaPolicies)
+
+    # Add multi-policy agent structure to world
+    sim.trialBeginFuncCol.append(blueprintMultipolicyAgent)
+    
     
     # Save data as pickle file
     sim.trialEndFuncCol.append(savePickle)

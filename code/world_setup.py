@@ -1,4 +1,5 @@
 from numpy import array, random, cos, sin, pi, vstack
+import code.subpolicies as subp
 
 def blueprintAgent(data):
     number_agents = data['Number of Agents']
@@ -10,7 +11,6 @@ def blueprintAgent(data):
     angles = random.uniform(-pi, pi, number_agents)
     data['Agent Orientations BluePrint'] = vstack((cos(angles), sin(angles))).T
 
-    
 def blueprintPoi(data):
     number_pois = data['Number of POIs']    
     world_width = data['World Width']
@@ -23,3 +23,25 @@ def initWorld(data):
     data['Agent Positions'] = data['Agent Positions BluePrint'].copy()
     data['Agent Orientations'] = data['Agent Orientations BluePrint'].copy()
     data['Poi Positions'] = data['Poi Positions BluePrint'].copy()
+
+def blueprintMultipolicyAgent(data):
+    """
+    Sets up the agent policy strcutre.
+
+    Preconditions: 
+    """
+    agent_policy_list = []
+    for a in range(data['Number of Agents']):
+        policies = {}
+        for (p, t) in data['Policy Schedule']:
+            # LOAD ALL THE POLICIES, one line for each policy type
+            # TODO
+            if p == "GoToPOI":
+                policies[p] = subp.poi_policy
+            elif p == "GoToRover":
+                policies[p] = subp.agent_policy
+            # et al....
+        agent_policy_list.append(policies)
+
+    data['Agent Policies'] = agent_policy_list
+    
