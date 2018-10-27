@@ -13,6 +13,7 @@ def getSim():
     sim = SimulationCore()
     dateTimeString = datetime.datetime.now().strftime("%m_%d_%Y %H_%M_%S_%f")
     
+    sim.data["Test Name"] = "Testing"
     sim.data["Number of Agents"] = 9
     sim.data["Number of POIs"] = 4
     sim.data["World Width"] = 50.0
@@ -20,21 +21,24 @@ def getSim():
     sim.data["Coupling"] = 3
     sim.data["Observation Radius"] = 4.0
     sim.data["Minimum Distance"] = 1.0
-    sim.data["Steps"] = 30
+    sim.data["Steps"] = 60
     sim.data["Trains per Episode"] = 100
     sim.data["Tests per Episode"] = 1
     sim.data["Number of Episodes"] = 1000
     sim.data["Specifics Name"] = "coupling_3"
-    sim.data["Mod Name"] = "global"
+    sim.data["Goal Team Size"] = 2
+
+    # Multireward parameters
+    sim.data["Policy Schedule"] = [("GoToPOI", 0), ("GoToRover", 10)]
     
     sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf %s.csv"%\
-        (sim.data["Specifics Name"], sim.data["Mod Name"], dateTimeString)
+        (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
         
     sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv"%\
-        (sim.data["Specifics Name"], sim.data["Mod Name"], dateTimeString)
+        (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
         
     sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle"%\
-        (sim.data["Specifics Name"], sim.data["Mod Name"], dateTimeString)
+        (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
         
 
     # NOTE: make sure FuncCol.appendtions are added to the list in the right order
@@ -70,8 +74,8 @@ def getSim():
     sim.worldTestStepFuncCol.append(updateTrajectoryHistories)
     
     # Add Agent Reward Functionality
-    sim.worldTrainEndFuncCol.append(assignGlobalReward)
-    sim.worldTestEndFuncCol.append(assignGlobalReward)
+    sim.worldTrainEndFuncCol.append(assignSharedTeams)
+    sim.worldTestEndFuncCol.append(assignSharedTeams)
     
     # Add Performance Recording Functionality
     sim.trialBeginFuncCol.append(createRewardHistory)

@@ -62,3 +62,11 @@ def alignment_mod(sim):
         
     sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle"%\
         (sim.data["Specifics Name"], sim.data["Mod Name"], dateTimeString)
+
+def test_mod(sim):
+    sim.data["Goal Team Size"] = 2
+    dateTimeString = datetime.datetime.now().strftime("%m_%d_%Y %H_%M_%S_%f")
+    print("Starting alignment test at\n\t%s\n"%(dateTimeString))
+    # Agent Reward 
+    sim.worldTrainEndFuncCol = [assignDifferenceReward if func == assignGlobalReward \
+        else func for func in sim.worldTrainEndFuncCol] 

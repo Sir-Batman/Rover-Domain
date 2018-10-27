@@ -1,4 +1,4 @@
-from numpy import dot
+from numpy import dot, mean
 
 def calculateGlobalReward(data):
     """
@@ -200,3 +200,47 @@ def assignDifferenceReward(data):
     differenceRewards, globalReward = calculateDifferenceReward(data)
     data["Agent Rewards"] = differenceRewards  
     data["Global Reward"] = globalReward
+
+
+# Note: The Single POI Reward is a special case of G. Specifically, it is G with a single agent and single POI in the world. Thus, we do not need to create a new function for it; we simply call assignGlobalReward(data) as we normally do, assuming the world has been instantiated properly.
+# If we want to see how the actualy single POI reward changes over the course of a run, for alignment or other metrics, then we will need to calculate it seperately of G.
+
+def assignSharedTeams(data):
+    """
+    Calculates the pair-wise distance between all agents. 
+    For a given goal team size, this works by:
+    1. calculating the distances between all agents.
+    2. Sorting those distances
+    3. Taking the average of the n-1 closest distances, where n is goal size.
+    4. Inverting the average distance 
+    5. Calculating the sum for all agents into one number, and providing it to the entire team.
+    """
+    reward = 0
+    for agentIndex in range(data["Number of Agents"]):
+        distance_a = []
+        agent_pos = data["Agent Positions"][agentIndex]
+        for i in range(data["Number of Agents"]):
+            if i != agentIndex:
+                seperation = agent_pos - data["Agent Positions"][i]
+                dist_squared = dot(seperation, seperation)
+                distance_a.append(dist_squared)
+        distance_a = sorted(distance_a)
+        distance_a = distance_a[:data["Goal Team Size"]]
+        reward += 1/mean(distance_a)
+    data["Global Reward"] = reward
+    data["Agent Rewards"] = [reward] * data["Number of Agents"]
+
+def assignExclusiveTeams(data):
+    """
+    Calculate reward for the exclusive team metric. 
+    Does this by:
+    1. Take the closest pair of agents. They start team 1
+    2. Take the next closest pair of agents. They form a team if not in a team already, 
+    or join their partner in the team if partner is in a team. 
+    Iterate until n teams are formed. Then, only fill agents into teams.
+
+    """
+    # TODO consider doing this slightly differently, with k-means clustering instead. Use sci-kit learn, and get all the samples organized by cluster (the .labels_ member of the returned object)
+    pass
+
+# TODO add any new rewards?
