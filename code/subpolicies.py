@@ -33,18 +33,25 @@ def agent_policy(state):
 
 
 def team_2_policy():
+    """ Returns a function which makes allows for using the teaming 2 policy """
     # Pick one of the team 2 policies
     filepath = "policies/Team2Policy{}.model".format(0)
     model = code.ccea.Evo_MLP(8, 2)
     model.load_state_dict(torch.load(filepath))
     return lambda s: model.get_next(s)
 
-"""
-def team3(state):
-    # Pick one of the team
-    filepath = "policies/team2policy{}.model".format(0)
-    policy = pickle.load("")
-    return
-"""
+def team_3_policy():
+    """ Returns a function which makes allows for using the teaming 3 policy """
+    # Pick one of the team 3 policies
+    filepath = "policies/Team3Policy{}.model".format(0)
+    model = code.ccea.Evo_MLP(8, 2)
+    model.load_state_dict(torch.load(filepath))
+    return lambda s: model.get_next(s)
 
-
+def team_4_policy():
+    """ Returns a function which makes allows for using the teaming 4 policy """
+    # Pick one of the team 4 policies
+    filepath = "policies/Team4Policy{}.model".format(0)
+    model = code.ccea.Evo_MLP(8, 2)
+    model.load_state_dict(torch.load(filepath))
+    return lambda s: model.get_next(s)
