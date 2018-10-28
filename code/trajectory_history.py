@@ -63,5 +63,5 @@ def saveTrajectoryHistories(data):
             writer.writerow(["Agent %d Orientation 1"%(agentIndex)] + [ori[1] for ori in agentOrientationHistory[agentIndex]])
             
         for poiIndex in range(number_pois):
-            writer.writerow(["Poi %d Position 0"%(agentIndex)] + [poiPositionCol[poiIndex][0]])
-            writer.writerow(["Poi %d Position 1"%(agentIndex)] + [poiPositionCol[poiIndex][1]])
+            writer.writerow(["Poi %d Position 0"%(poiIndex)] + [poiPositionCol[poiIndex][0]])
+            writer.writerow(["Poi %d Position 1"%(poiIndex)] + [poiPositionCol[poiIndex][1]])

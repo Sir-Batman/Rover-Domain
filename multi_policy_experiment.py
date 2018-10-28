@@ -13,7 +13,7 @@ def getSim():
     sim = SimulationCore()
     dateTimeString = datetime.datetime.now().strftime("%m_%d_%Y %H_%M_%S_%f")
     
-    sim.data["Test Name"] = "Train Teaming Policies 4"
+    sim.data["Test Name"] = "Simple Schedule load weights"
     sim.data["Number of Agents"] = 9
     sim.data["Number of POIs"] = 4
     sim.data["World Width"] = 50.0
@@ -24,12 +24,11 @@ def getSim():
     sim.data["Steps"] = 60
     sim.data["Trains per Episode"] = 100
     sim.data["Tests per Episode"] = 1
-    sim.data["Number of Episodes"] = 1000
-    sim.data["Specifics Name"] = "TeamRewards"
-    sim.data["Goal Team Size"] = 4
+    sim.data["Number of Episodes"] = 10
+    sim.data["Specifics Name"] = "Schedule_tests"
 
     # Multireward parameters
-    sim.data["Policy Schedule"] = [("GoToPOI", 0), ("GoToRover", 10)]
+    sim.data["Policy Schedule"] = [("Team2", 0), ("GoToPOI", 20)]
     
     sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf %s.csv"%\
         (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
@@ -37,8 +36,7 @@ def getSim():
     sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv"%\
         (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
         
-    sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle"%\
-        (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
+    # sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle"% (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
         
 
     # NOTE: make sure FuncCol.appendtions are added to the list in the right order
@@ -59,11 +57,11 @@ def getSim():
     # Add Rover Domain Dynamic Functionality (using Cython to speed up code)
     # Note: Change the Process functions to change the agent type.
     sim.worldTrainStepFuncCol.append(doAgentSense)
-    sim.worldTrainStepFuncCol.append(doAgentProcess)
+    sim.worldTrainStepFuncCol.append(doAgentProcess_ScheduleMP)
     sim.worldTrainStepFuncCol.append(doAgentMove)
 
     sim.worldTestStepFuncCol.append(doAgentSense)
-    sim.worldTestStepFuncCol.append(doAgentProcess)
+    sim.worldTestStepFuncCol.append(doAgentProcess_ScheduleMP)
     sim.worldTestStepFuncCol.append(doAgentMove)
     
     # Add Agent Position Trajectory History Functionality
@@ -74,8 +72,8 @@ def getSim():
     sim.worldTestStepFuncCol.append(updateTrajectoryHistories)
     
     # Add Agent Reward Functionality
-    sim.worldTrainEndFuncCol.append(assignSharedTeams)
-    sim.worldTestEndFuncCol.append(assignSharedTeams)
+    sim.worldTrainEndFuncCol.append(assignGlobalReward)
+    sim.worldTestEndFuncCol.append(assignGlobalReward)
     
     # Add Performance Recording Functionality
     sim.trialBeginFuncCol.append(createRewardHistory)
@@ -92,24 +90,24 @@ def getSim():
     
     # Add CCEA Functionality 
     
-    sim.trialBeginFuncCol.append(initCcea(input_shape= 8, num_outputs=2, num_units = 16))
-    sim.worldTrainBeginFuncCol.append(assignCceaPolicies)
-    sim.worldTrainEndFuncCol.append(rewardCceaPolicies)
-    sim.worldTestBeginFuncCol.append(assignBestCceaPolicies)
-    sim.testEndFuncCol.append(evolveCceaPolicies)
+    # sim.trialBeginFuncCol.append(initCcea(input_shape= 8, num_outputs=2, num_units = 16))
+    # sim.worldTrainBeginFuncCol.append(assignCceaPolicies)
+    # sim.worldTrainEndFuncCol.append(rewardCceaPolicies)
+    # sim.worldTestBeginFuncCol.append(assignBestCceaPolicies)
+    # sim.testEndFuncCol.append(evolveCceaPolicies)
 
     # Add multi-policy agent structure to world
-    # sim.trialBeginFuncCol.append(blueprintMultipolicyAgent)
+    sim.trialBeginFuncCol.append(blueprintMultipolicyAgent)
     
     
     # Save data as pickle file
-    sim.trialEndFuncCol.append(savePickle)
+    # sim.trialEndFuncCol.append(savePickle)
     
     return sim
 
+    
+
+
 if __name__ == "__main__":
-    sim = getSim()
+    sim= getSim()
     sim.run()
-
-
-
