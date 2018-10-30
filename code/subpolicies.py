@@ -1,6 +1,7 @@
 import code.ccea
 import torch
 import pickle
+import random
 def poi_policy(state):
     """
     Heuristic method, drives the agent toward the closest POI by the state representation
@@ -55,3 +56,7 @@ def team_4_policy():
     model = code.ccea.Evo_MLP(8, 2)
     model.load_state_dict(torch.load(filepath))
     return lambda s: model.get_next(s)
+
+def random_policy(state):
+    return (random.uniform(-1.0, 1.0), random.uniform(-1.0,1.0))
+

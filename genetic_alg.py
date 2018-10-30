@@ -9,6 +9,7 @@ class geneticPolicySearch(object):
         self.getSim = getSim
         self.timesteps = timesteps
         self.t = 0
+        self.genes = ["Random", "GoToPOI", "Team2", "Team3", "Team4"]
         creator.create("FitnessMax", base.Fitness, weights=(0,))
         creator.create("Individual", list, fitness=creator.FitnessMax)
 
@@ -28,7 +29,7 @@ class geneticPolicySearch(object):
     def _create_value(self):
         if self.t == self.timesteps:
             self.t = 0
-        p = random.choice(["GoToPOI", "Team2", "Team3", "Team4"])
+        p = random.choice(self.genes)
         v = (p, self.t)
         self.t += 1
         return v
@@ -36,7 +37,7 @@ class geneticPolicySearch(object):
     def _mutate(self, individual, indpb):
         for i in range(len(individual)):
             if random.random() <= indpb:
-                p = random.choice(["GoToPOI", "Team2", "Team3", "Team4"])
+                p = random.choice(self.genes)
                 v = (p, individual[i][1]) # Copy the timestep
                 individual[i] = v
         return individual, 

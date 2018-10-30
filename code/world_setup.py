@@ -47,7 +47,7 @@ def blueprintMultipolicyAgent(data):
             elif p == "Team4":
                 policies[p] = subp.team_4_policy()
             elif p == "Random":
-                policies[p] = subp.random
+                policies[p] = subp.random_policy
         agent_policy_list.append(policies)
 
     data['Agent Policies'] = agent_policy_list
