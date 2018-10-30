@@ -13,22 +13,24 @@ def getSim():
     sim = SimulationCore()
     dateTimeString = datetime.datetime.now().strftime("%m_%d_%Y %H_%M_%S_%f")
     
-    sim.data["Test Name"] = "Simple Schedule load weights"
+    sim.data["Specifics Name"] = "Schedule_Experiments_9A4P3C50W"
+
     sim.data["Number of Agents"] = 9
     sim.data["Number of POIs"] = 4
+    sim.data["Coupling"] = 3
     sim.data["World Width"] = 50.0
     sim.data["World Length"] = 50.0
-    sim.data["Coupling"] = 3
+    sim.data["Steps"] = 60
     sim.data["Observation Radius"] = 4.0
     sim.data["Minimum Distance"] = 1.0
-    sim.data["Steps"] = 60
+
     sim.data["Trains per Episode"] = 100
     sim.data["Tests per Episode"] = 1
-    sim.data["Number of Episodes"] = 10
-    sim.data["Specifics Name"] = "Schedule_tests"
+    sim.data["Number of Episodes"] = 1
 
     # Multireward parameters
-    sim.data["Policy Schedule"] = [("Team2", 0), ("GoToPOI", 20)]
+    sim.data["Policy Schedule"] = [("Team2", 0), ("Team3", 10), ("Team4", 25), ("GoToPOI", 35)]
+    sim.data["Test Name"] = "Schedule-T2-0_T3-10_T4-25_POI35"
     
     sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf %s.csv"%\
         (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
