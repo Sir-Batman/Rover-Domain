@@ -13,7 +13,7 @@ def getSim():
     sim = SimulationCore()
     dateTimeString = datetime.datetime.now().strftime("%m_%d_%Y %H_%M_%S_%f")
     
-    sim.data["Specifics Name"] = "Schedule_Experiments_9A4P3C50W"
+    sim.data["Specifics Name"] = "Schedule Tests"#"Schedule_Experiments_9A4P3C50W"
 
     sim.data["Number of Agents"] = 9
     sim.data["Number of POIs"] = 4
@@ -24,9 +24,12 @@ def getSim():
     sim.data["Observation Radius"] = 4.0
     sim.data["Minimum Distance"] = 1.0
 
-    sim.data["Trains per Episode"] = 100
+    sim.data["Trains per Episode"] = 1
     sim.data["Tests per Episode"] = 1
     sim.data["Number of Episodes"] = 1
+
+    # Fixed POI placement positions NOTE MUST EQUAL NUM POI's
+    sim.data['Fixed Poi Positions'] = [(5.,5.), (45.,5.), (5,45.), (45.,45.)]
 
     # Multireward parameters
     sim.data["Policy Schedule"] = [("Team2", 0), ("Team3", 10), ("Team4", 25), ("GoToPOI", 35)]
@@ -52,9 +55,11 @@ def getSim():
     sim.trainBeginFuncCol.append(blueprintAgent)
     sim.trainBeginFuncCol.append(blueprintPoi)
     sim.worldTrainBeginFuncCol.append(initWorld)
+    sim.worldTrainBeginFuncCol.append(staticPOIPlacement) # Hacky Override the initWorld POI placement
     sim.testBeginFuncCol.append(blueprintAgent)
     sim.testBeginFuncCol.append(blueprintPoi)
     sim.worldTestBeginFuncCol.append(initWorld)
+    sim.worldTestBeginFuncCol.append(staticPOIPlacement) # Hacky Override the initWorld POI placement
     
     # Add Rover Domain Dynamic Functionality (using Cython to speed up code)
     # Note: Change the Process functions to change the agent type.

@@ -24,6 +24,9 @@ def initWorld(data):
     data['Agent Orientations'] = data['Agent Orientations BluePrint'].copy()
     data['Poi Positions'] = data['Poi Positions BluePrint'].copy()
 
+def staticPOIPlacement(data):
+    data['Poi Positions'] = data['Fixed Poi Positions']
+
 def blueprintMultipolicyAgent(data):
     """
     Sets up the agent policy strcutre.
