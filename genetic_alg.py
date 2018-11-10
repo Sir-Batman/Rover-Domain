@@ -1,7 +1,7 @@
 from deap import base, creator, tools, algorithms
 import numpy as np
 import random
-import multi_policy_experiment as mpe
+import genetic_search_experiment_parameters as mpe
 
 class geneticPolicySearch(object):
     def __init__(self, timesteps, getSim):
@@ -51,9 +51,8 @@ class geneticPolicySearch(object):
         return [sim.data["Global Reward"]]
 
 # Run main search
-GENS = 10
 search = geneticPolicySearch(50, mpe.getSim)
-pop = search.toolbox.population(n=10)
+pop = search.toolbox.population(n=50)
 hof = tools.HallOfFame(maxsize=1)
-algorithms.eaSimple(population=pop, toolbox=search.toolbox, cxpb=0.5, mutpb=0.2, ngen=50, halloffame=hof, verbose=True)
-print("SOLUTION:", hof[0])
+algorithms.eaSimple(population=pop, toolbox=search.toolbox, cxpb=0.5, mutpb=0.2, ngen=1000, halloffame=hof, verbose=True)
+print("SOLUTION:", hof)
