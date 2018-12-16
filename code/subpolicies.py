@@ -1,7 +1,8 @@
-import code.ccea
-import torch
-import pickle
 import random
+import torch
+import code.ccea
+
+
 def poi_policy(state):
     """
     Heuristic method, drives the agent toward the closest POI by the state representation
@@ -16,6 +17,7 @@ def poi_policy(state):
         return (-0.71, -0.71)
     elif state[7] == strongest_poi:
         return (0.71, -0.71)
+
 
 def agent_policy(state):
     """
@@ -41,6 +43,7 @@ def team_2_policy():
     model.load_state_dict(torch.load(filepath))
     return lambda s: model.get_next(s)
 
+
 def team_3_policy():
     """ Returns a function which makes allows for using the teaming 3 policy """
     # Pick one of the team 3 policies
@@ -48,6 +51,7 @@ def team_3_policy():
     model = code.ccea.Evo_MLP(8, 2)
     model.load_state_dict(torch.load(filepath))
     return lambda s: model.get_next(s)
+
 
 def team_4_policy():
     """ Returns a function which makes allows for using the teaming 4 policy """
@@ -57,6 +61,6 @@ def team_4_policy():
     model.load_state_dict(torch.load(filepath))
     return lambda s: model.get_next(s)
 
-def random_policy(state):
-    return (random.uniform(-1.0, 1.0), random.uniform(-1.0,1.0))
 
+def random_policy(state):
+    return (random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0))
