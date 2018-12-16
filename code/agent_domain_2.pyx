@@ -2,6 +2,7 @@ from alignment import quickalignment
 import numpy as np
 import subpolicies
 import qlearner
+from math import isclose
 cimport cython
 
 cdef extern from "math.h":
@@ -136,7 +137,7 @@ def doAgentProcess_ScheduleMP(data):
     t is the timestep at which to switch to policy p (not the duration of using policy p)
     The first policy to be used should have timestep 0 as it's start point.
 
-    Also assumes the agent policies are stored in a list
+    Also assumes the agent policies are stored in a dictionary
     """
     # Find policy to use
     current_step = data["Step Index"]
@@ -159,6 +160,70 @@ def doAgentProcess_ScheduleMP(data):
         actionCol[agentIndex][0], actionCol[agentIndex][1] = policy(observationCol[agentIndex])
     data["Agent Actions"] = actionCol
 
+def doAgentProcess_StateMP(data):
+    """
+    Selects actions based on the state values that are currently seen, and not off a time-based schedule.
+
+    Assumes agent policies are stored in a dictionary with their names as keys.
+    """
+    cdef int agentIndex
+    cdef int number_agents = data['Number of Agents']
+    policy_key = data['Policy Schedule'][0][0]
+    actionCol = np.zeros((number_agents, 2), dtype = np.float_)
+    observationCol = data["Agent Observations"]
+    for agentIndex in range(number_agents):
+        state = data["Agent Observations"][agentIndex]
+
+        if policy_key == "POI":
+            off_policy = "Team2"
+
+            if data["Policy Schedule"][0][1] == 1:
+                if max(state[:4]) > max(state[4:]):
+                    policy = data["Agent Policies"][agentIndex][policy_key]
+                else:
+                    policy = data["Agent Policies"][agentIndex][off_policy]
+
+            elif data["Policy Schedule"][0][1] == 2:
+                if isclose(state[0], state[1], rel_tol=1e-3) and\
+                        isclose(state[1], state[2], rel_tol=1e-3) and \
+                        isclose(state[2], state[3], rel_tol=1e-3) and \
+                        isclose(state[3], state[0], rel_tol=1e-3):
+                    policy = data["Agent Policies"][agentIndex][policy_key]
+                else:
+                    policy = data["Agent Policies"][agentIndex][off_policy]
+
+            elif data["Policy Schedule"][0][1] == 3:
+                if max(state[:4]) > 2:
+                    policy = data["Agent Policies"][agentIndex][policy_key]
+                else:
+                    policy = data["Agent Policies"][agentIndex][off_policy]
+
+        else:
+            off_policy = "POI"
+
+            if data["Policy Schedule"][0][1] == 1:
+                if max(state[4:]) < 0.005:
+                    policy = data["Agent Policies"][agentIndex][policy_key]
+                else:
+                    policy = data["Agent Policies"][agentIndex][off_policy]
+
+            elif data["Policy Schedule"][0][1] == 2:
+                if isclose(state[0], state[1], rel_tol=1e-3) and \
+                        isclose(state[1], state[2], rel_tol=1e-3) and \
+                        isclose(state[2], state[3], rel_tol=1e-3) and \
+                        isclose(state[3], state[0], rel_tol=1e-3):
+                    policy = data["Agent Policies"][agentIndex][policy_key]
+                else:
+                    policy = data["Agent Policies"][agentIndex][off_policy]
+
+            elif data["Policy Schedule"][0][1] == 3:
+                if max(state[4:]) > 1:
+                    policy = data["Agent Policies"][agentIndex][policy_key]
+                else:
+                    policy = data["Agent Policies"][agentIndex][off_policy]
+
+        actionCol[agentIndex][0], actionCol[agentIndex][1] = policy(observationCol[agentIndex])
+    data["Agent Actions"] = actionCol
 
 def doAgentProcess_Alignment(data):
     """
