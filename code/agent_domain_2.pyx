@@ -174,7 +174,7 @@ def doAgentProcess_StateMP(data):
     for agentIndex in range(number_agents):
         state = data["Agent Observations"][agentIndex]
 
-        if policy_key == "POI":
+        if policy_key == "GoToPOI":
             off_policy = "Team2"
 
             if data["Policy Schedule"][0][1] == 1:
@@ -199,7 +199,7 @@ def doAgentProcess_StateMP(data):
                     policy = data["Agent Policies"][agentIndex][off_policy]
 
         else:
-            off_policy = "POI"
+            off_policy = "GoToPOI"
 
             if data["Policy Schedule"][0][1] == 1:
                 if max(state[4:]) < 0.005:

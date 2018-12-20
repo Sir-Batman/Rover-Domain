@@ -36,21 +36,13 @@ def blueprintMultipolicyAgent(data):
     agent_policy_list = []
     for a in range(data['Number of Agents']):
         policies = {}
-        for (p, t) in data['Policy Schedule']:
-            # LOAD ALL THE POLICIES, one line for each policy type
-            # TODO
-            if p == "GoToPOI":
-                policies[p] = subp.poi_policy
-            elif p == "GoToRover":
-                policies[p] = subp.agent_policy()
-            elif p == "Team2":
-                policies[p] = subp.team_2_policy()
-            elif p == "Team3":
-                policies[p] = subp.team_3_policy()
-            elif p == "Team4":
-                policies[p] = subp.team_4_policy()
-            elif p == "Random":
-                policies[p] = subp.random_policy
+        # LOAD ALL THE POLICIES, one line for each policy type
+        policies["GoToPOI"] = subp.poi_policy
+        policies["GoToRover"] = subp.agent_policy
+        policies["Team2"] = subp.team_2_policy()
+        policies["Team3"] = subp.team_3_policy()
+        policies["Team4"] = subp.team_4_policy()
+        policies["Random"] = subp.random_policy
         agent_policy_list.append(policies)
 
     data['Agent Policies'] = agent_policy_list

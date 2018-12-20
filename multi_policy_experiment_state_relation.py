@@ -115,7 +115,7 @@ def getSim():
 
 
 if __name__ == "__main__":
-    schedules = [("POI", 1), ("POI", 2), ("POI", 3), ("Team2", 1), ("Team2", 2), ("Team2", 3)]
+    schedules = [[("GoToPOI", 1)], [("GoToPOI", 2)], [("GoToPOI", 3)], [("Team2", 1)], [("Team2", 2)], [("Team2", 3)]]
 
     num_trials = 100
     total_results = []
