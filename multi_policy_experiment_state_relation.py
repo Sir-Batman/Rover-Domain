@@ -11,16 +11,18 @@ from code.reward_history import *  # Performance Recording
 from code.ccea import *  # CCEA
 from code.save_to_pickle import *  # Save data as pickle file
 import numpy as np
+import pandas as pd
+import multiprocessing
 
 
 def getSim():
     sim = SimulationCore()
     dateTimeString = datetime.datetime.now().strftime("%m_%d_%Y %H_%M_%S_%f")
 
-    sim.data["Specifics Name"] = "State Relation Tests"  # "Schedule_Experiments_9A4P3C50W"
+    sim.data["Specifics Name"] = "State Relation Tests (Pandas)"  # "Schedule_Experiments_9A4P3C50W"
 
-    sim.data["Number of Agents"] = 10
-    sim.data["Number of POIs"] = 10
+    sim.data["Number of Agents"] = 12
+    sim.data["Number of POIs"] = 4
     sim.data["Coupling"] = 4
     sim.data["World Width"] = 50.0
     sim.data["World Length"] = 50.0
@@ -57,11 +59,11 @@ def getSim():
     sim.trainBeginFuncCol.append(blueprintAgent)
     sim.trainBeginFuncCol.append(blueprintPoi)
     sim.worldTrainBeginFuncCol.append(initWorld)
-    # sim.worldTrainBeginFuncCol.append(staticPOIPlacement) # Hacky Override the initWorld POI placement
+    sim.worldTrainBeginFuncCol.append(staticPOIPlacement) # Hacky Override the initWorld POI placement
     sim.testBeginFuncCol.append(blueprintAgent)
     sim.testBeginFuncCol.append(blueprintPoi)
     sim.worldTestBeginFuncCol.append(initWorld)
-    # sim.worldTestBeginFuncCol.append(staticPOIPlacement) # Hacky Override the initWorld POI placement
+    sim.worldTestBeginFuncCol.append(staticPOIPlacement) # Hacky Override the initWorld POI placement
 
     # Add Rover Domain Dynamic Functionality (using Cython to speed up code)
     # Note: Change the Process functions to change the agent type.
@@ -87,7 +89,7 @@ def getSim():
     # Add Performance Recording Functionality
     sim.trialBeginFuncCol.append(createRewardHistory)
     sim.testEndFuncCol.append(updateRewardHistory)
-    sim.trialEndFuncCol.append(saveRewardHistory)
+    sim.trialEndFuncCol.append(saveRewardPandas)
 
     # # Add DE Functionality (all Functionality below are dependent and are displayed together for easy accessibility)
     # from code.differential_evolution import initDe, assignDePolicies, rewardDePolicies, evolveDePolicies, assignBestDePolicies
@@ -113,31 +115,33 @@ def getSim():
 
     return sim
 
+def run(schedule):
+    num_trials = 100
+    df = pd.DataFrame()
+    results = []
+    for t in range(num_trials):
+        sim = getSim()
+        sim.data["Policy Schedule"] = schedule
+        dateTimeString = datetime.datetime.now().strftime("%m_%d_%Y %H_%M_%S_%f")
+        sim.data["Test Name"] = "Schedule-{}-{}".format(*schedule[0])
+
+        sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf %s.csv" % \
+                                                 (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
+
+        sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv" % \
+                                                (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
+
+        sim.run()
+        print(sim.data["Global Reward"])
+        results.append(sim.data["Global Reward"])
+        print(results)
+    print("FINISHED")
+    print(np.average(results, axis=0), np.std(results, axis=0))
+    df = pd.DataFrame(results)
+    df.to_pickle("log/dataframes/"+str(schedule)+".pkl")
 
 if __name__ == "__main__":
     schedules = [[("GoToPOI", 1)], [("GoToPOI", 2)], [("GoToPOI", 3)], [("Team2", 1)], [("Team2", 2)], [("Team2", 3)]]
 
-    num_trials = 100
-    total_results = []
-    for t in range(num_trials):
-        results = []
-        for i, s in enumerate(schedules):
-            sim = getSim()
-            sim.data["Policy Schedule"] = s
-            dateTimeString = datetime.datetime.now().strftime("%m_%d_%Y %H_%M_%S_%f")
-            sim.data["Test Name"] = "Schedule-{}".format(i)
-
-            sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf %s.csv" % \
-                                                     (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
-
-            sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv" % \
-                                                    (sim.data["Specifics Name"], sim.data["Test Name"], dateTimeString)
-
-            sim.run()
-            print(sim.data["Global Reward"])
-            results.append(sim.data["Global Reward"])
-        print(results)
-        total_results.append(results)
-    print("FINISHED")
-    print(np.average(total_results, axis=0))
-    print(np.std(total_results, axis=0))
+    pool = multiprocessing.Pool(6)
+    pool.map(run, schedules)
