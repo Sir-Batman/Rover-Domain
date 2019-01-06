@@ -1,5 +1,5 @@
 from numpy import array, random, cos, sin, pi, vstack
-import code.subpolicies as subp
+import src.subpolicies as subp
 
 def blueprintAgent(data):
     number_agents = data['Number of Agents']

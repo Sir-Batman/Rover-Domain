@@ -3,13 +3,13 @@ from simulation_core import SimulationCore
 import pyximport;
 
 pyximport.install()  # For cython(pyx) code
-from code.world_setup import *  # Rover Domain Construction
-from code.agent_domain_2 import *  # Rover Domain Dynamic
-from code.trajectory_history import *  # Agent Position Trajectory History
-from code.reward import *  # Agent Reward
-from code.reward_history import *  # Performance Recording
-from code.ccea import *  # CCEA
-from code.save_to_pickle import *  # Save data as pickle file
+from src.world_setup import *  # Rover Domain Construction
+from src.agent_domain_2 import *  # Rover Domain Dynamic
+from src.trajectory_history import *  # Agent Position Trajectory History
+from src.reward import *  # Agent Reward
+from src.reward_history import *  # Performance Recording
+from src.ccea import *  # CCEA
+from src.save_to_pickle import *  # Save data as pickle file
 import numpy as np
 import pandas as pd
 import multiprocessing
@@ -92,7 +92,7 @@ def getSim():
     sim.trialEndFuncCol.append(saveRewardPandas)
 
     # # Add DE Functionality (all Functionality below are dependent and are displayed together for easy accessibility)
-    # from code.differential_evolution import initDe, assignDePolicies, rewardDePolicies, evolveDePolicies, assignBestDePolicies
+    # from src.differential_evolution import initDe, assignDePolicies, rewardDePolicies, evolveDePolicies, assignBestDePolicies
     # sim.trialBeginFuncCol.append(initDe(input_shape= 8, num_outputs=2, num_units = 16))
     # sim.worldTrainBeginFuncCol.append(assignDePolicies)
     # sim.worldTrainEndFuncCol.append(rewardDePolicies)
