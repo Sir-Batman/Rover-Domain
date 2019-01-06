@@ -23,7 +23,7 @@ def getSim():
 
     sim.data["Number of Agents"] = 12
     sim.data["Number of POIs"] = 4
-    sim.data["Coupling"] = 4
+    sim.data["Coupling"] = 3
     sim.data["World Width"] = 50.0
     sim.data["World Length"] = 50.0
     sim.data["Steps"] = 60
@@ -52,8 +52,8 @@ def getSim():
     # NOTE: make sure FuncCol.appendtions are added to the list in the right order
 
     # print the current Episode
-    sim.testEndFuncCol.append(lambda data: print(data["Episode Index"], data["Global Reward"]))
-    sim.trialEndFuncCol.append(lambda data: print())
+    # sim.testEndFuncCol.append(lambda data: print(data["Episode Index"], data["Global Reward"]))
+    # sim.trialEndFuncCol.append(lambda data: print())
 
     # Add Rover Domain Construction Functionality
     sim.trainBeginFuncCol.append(blueprintAgent)
@@ -143,5 +143,5 @@ def run(schedule):
 if __name__ == "__main__":
     schedules = [[("GoToPOI", 1)], [("GoToPOI", 2)], [("GoToPOI", 3)], [("Team2", 1)], [("Team2", 2)], [("Team2", 3)]]
 
-    pool = multiprocessing.Pool(6)
+    pool = multiprocessing.Pool(3)
     pool.map(run, schedules)
