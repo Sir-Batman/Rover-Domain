@@ -25,16 +25,6 @@ def makeSim():
 
     # Experiment Parameters
     sim.data["Test Name"] = "Sequential Obs"
-    sim.data["Specifics Name"] = "D"
-    unique_id = str(uuid4())
-    sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf_%s.pkl" % \
-                                             (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
-
-    sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv" % \
-                                            (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
-
-    sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle" % \
-                                        (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
     # World Parameters
     sim.data["World Width"] = 50.0
     sim.data["World Length"] = 50.0
@@ -93,6 +83,16 @@ def makeSim():
 def g_trial(sim):
     """G baseline comparison"""
     print("Starting trial ")
+    sim.data["Specifics Name"] = "G"
+    unique_id = str(uuid4())
+    sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf_%s.pkl" % \
+                                             (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+
+    sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv" % \
+                                            (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+
+    sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle" % \
+                                        (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
     sim.worldTrainEndFuncCol.append(assignGlobalReward)
     sim.worldTestEndFuncCol.append(assignGlobalReward)
 
@@ -113,6 +113,16 @@ def g_trial(sim):
 def d_trial(sim):
     """D baseline comparison"""
     print("Starting trial ")
+    sim.data["Specifics Name"] = "D"
+    unique_id = str(uuid4())
+    sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf_%s.pkl" % \
+                                             (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+
+    sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv" % \
+                                            (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+
+    sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle" % \
+                                        (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
     sim.worldTrainEndFuncCol.append(assignDifferenceReward)
     sim.worldTestEndFuncCol.append(assignDifferenceReward)
 
@@ -132,17 +142,43 @@ def d_trial(sim):
 
 def alignment_trial(sim):
     """Main alignment test"""
-    pass
+    # TODO Make this based on the alignment between the rewards, alignment by default
+    sim.data["Specifics Name"] = "Alignment"
+    unique_id = str(uuid4())
+    sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf_%s.pkl" % \
+                                             (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+
+    sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv" % \
+                                            (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+
+    sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle" % \
+                                        (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+    return sim
 
 
 def perfect_policy(sim):
     """Hand-coded optimal policy"""
-    pass
+    # TODO code this based on the state relation (similar to the previous one) and just make it select the 3
+    # TODO policies by if the agent has observed things in the perfect order
+    # Used to calculate the empirical top score
+    sim.data["Specifics Name"] = "Perfect"
+    unique_id = str(uuid4())
+    sim.data["Performance Save File Name"] = "log/%s/%s/performance/perf_%s.pkl" % \
+                                             (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+
+    sim.data["Trajectory Save File Name"] = "log/%s/%s/trajectory/traj %s.csv" % \
+                                            (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+
+    sim.data["Pickle Save File Name"] = "log/%s/%s/pickle/data %s.pickle" % \
+                                        (sim.data["Specifics Name"], sim.data["Test Name"], unique_id)
+    return sim
 
 
 def trial(i):
-    print("Starting trial {}".format(i))
+    """Applies modification and then runs. Worker function for multiprocessing."""
+    print("Starting trial {}".format(i['info']))
     sim = makeSim()
+    sim = i['mod'](sim)
     sim.run()
 
 
